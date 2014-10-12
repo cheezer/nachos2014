@@ -32,7 +32,7 @@ public class JoinGrader extends BasicTestGrader {
 
 			assertTrue(handler.finished,
 					" join() returned but target thread is still running");
-			System.out.println(i);
+			//System.out.println(i);
 		}
 
 		done();
