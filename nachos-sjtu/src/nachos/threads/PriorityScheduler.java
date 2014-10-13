@@ -156,7 +156,10 @@ public class PriorityScheduler extends Scheduler {
 			// implement me
 			ThreadState ts;
 			if (holder != null)
+			{
 				holder.holdList.remove(this);
+				holder.reCalEffectivePriority();
+			}
 			if ((ts = pickNextThread()) != null)
 			{
 				ts.acquire(this);
@@ -185,7 +188,9 @@ public class PriorityScheduler extends Scheduler {
 				if (ans == null || ts.efcPriority > ans.efcPriority ||
 						ts.efcPriority == ans.efcPriority && ts.enterTime < ans.enterTime)
 					ans = ts;
+				//Lib.debug('p', ts.thread.getName() + " priority " + ts.priority + "efcPriority" + ts.efcPriority);
 			}
+			//Lib.debug('p', "\n");
 			return ans;
 		}
 

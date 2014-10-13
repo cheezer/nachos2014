@@ -147,8 +147,8 @@ public final class Lib {
 	 * @return <tt>true</tt> if this flag was enabled on the command line.
 	 */
 	public static boolean test(char flag) {
-		/*if (flag == 'b')
-			return true;*/
+//		if (0 == 0)
+//			return true;
 		if (debugFlags == null)
 			return false;
 		else if (debugFlags[(int) '+'])
