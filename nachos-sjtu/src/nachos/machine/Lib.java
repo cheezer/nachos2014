@@ -148,7 +148,9 @@ public final class Lib {
 	 */
 	public static boolean test(char flag) {
 //		if (0 == 0)
-//			return true;
+			//return true;
+		//if (flag == 'a')
+			//return true;
 		if (debugFlags == null)
 			return false;
 		else if (debugFlags[(int) '+'])

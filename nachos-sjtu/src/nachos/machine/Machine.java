@@ -354,7 +354,7 @@ public final class Machine {
 	private static SynchDisk synchDisk = null;
 	private static AutoGrader autoGrader = null;
 
-	private static String autoGraderClassName = "nachos.ag.PriorityGrader";
+	private static String autoGraderClassName = "nachos.ag.AutoGrader";
 
 	/**
 	 * Return the name of the shell program that a user-programming kernel must
@@ -383,7 +383,7 @@ public final class Machine {
 	 * @return the name of the process class that the kernel should use.
 	 * 
 	 * @see nachos.userprog.UserKernel#run
-	 * @see nachos.userprog.UserProcess
+	 * @see nachos.userprog.UserProcess1
 	 * @see nachos.vm.VMProcess
 	 * @see nachos.filesys.FilesysProcess
 	 * @see nachos.network.NetProcess

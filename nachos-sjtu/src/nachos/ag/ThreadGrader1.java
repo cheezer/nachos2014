@@ -7,7 +7,6 @@ import nachos.threads.KThread;
 import nachos.threads.Lock;
 import nachos.threads.RoundRobinScheduler;
 import nachos.threads.ThreadedKernel;
-import nachos.threads.Condition;
 
 /**
  * <li>ThreadGrader1: <b>Condition2</b><br>
@@ -68,8 +67,6 @@ public class ThreadGrader1 extends BasicTestGrader {
 		while (count != total) {
 			assertTrue(Machine.timer().getTime() < 20000,
 					"Too many ticks wasted \nTest ThreadGrader1.b");
-			//System.out.println("!!" + turn);
-
 			KThread.yield();
 		}
 
@@ -88,7 +85,7 @@ public class ThreadGrader1 extends BasicTestGrader {
 			while (turn != n) {
 				cond[n].sleep();
 			}
-			//System.out.println(KThread.currentThread() + " print " + n);
+			// System.out.println(KThread.currentThread() + " print " + n);
 			++count;
 			turn = (turn + 1) % total;
 			cond[turn].wake();

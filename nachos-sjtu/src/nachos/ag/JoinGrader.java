@@ -19,7 +19,7 @@ public class JoinGrader extends BasicTestGrader {
 		// check argument
 		assertTrue(times > 0, "invalid numThreads argument");
 		assertTrue(waitTicks > 0, "invalid waitTicks argument");
-		
+
 		for (int i = 0; i < times; i++) {
 
 			ThreadHandler handler = forkNewThread(new Runnable() {
@@ -32,7 +32,6 @@ public class JoinGrader extends BasicTestGrader {
 
 			assertTrue(handler.finished,
 					" join() returned but target thread is still running");
-			//System.out.println(i);
 		}
 
 		done();

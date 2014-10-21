@@ -20,7 +20,7 @@ public abstract class BasicTestGrader extends AutoGrader
   
   protected class ThreadHandler
   {
-    public KThread thread;
+    KThread thread;
     public boolean finished = false;
     
     public ThreadHandler (KThread thread)

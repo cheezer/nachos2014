@@ -11,7 +11,7 @@ public class UThread extends KThread {
 	/**
 	 * Allocate a new UThread.
 	 */
-	public UThread(UserProcess process) {
+	public UThread(UserProcess userProcess) {
 		super();
 
 		setTarget(new Runnable() {
@@ -20,7 +20,7 @@ public class UThread extends KThread {
 			}
 		});
 
-		this.process = process;
+		this.process = userProcess;
 	}
 
 	private void runProgram() {

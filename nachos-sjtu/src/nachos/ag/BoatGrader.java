@@ -29,6 +29,7 @@ public class BoatGrader extends BasicTestGrader {
 				"number can not be negative");
 
 		this.startTest(adults, children);
+		AllCrossed();
 		done();
 	}
 
@@ -155,8 +156,10 @@ public class BoatGrader extends BasicTestGrader {
 	public void readyThread(KThread thread) {
 		if (thread == idleThread) {
 			++idleReadyCount;
-			if (idleReadyCount > 1000)
+			if (idleReadyCount > 1000){
 				AllCrossed();
+				done();
+			}				
 		} else
 			idleReadyCount = 0;
 	}
@@ -172,7 +175,7 @@ public class BoatGrader extends BasicTestGrader {
 
 	@Override
 	public void setIdleThread(KThread thread) {
-		thread = idleThread;
+		idleThread = thread;
 	}
 
 	KThread idleThread;
