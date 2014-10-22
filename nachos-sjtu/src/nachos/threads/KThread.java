@@ -449,7 +449,7 @@ public class KThread {
 
 	private static final int statusNew = 0;
 	private static final int statusReady = 1;
-	private static final int statusRunning = 2;
+	public static final int statusRunning = 2;
 	private static final int statusBlocked = 3;
 	private static final int statusFinished = 4;
 
@@ -458,12 +458,12 @@ public class KThread {
 	 * ready (on the ready queue but not running), running, or blocked (not on
 	 * the ready queue and not running).
 	 */
-	private int status = statusNew;
+	public int status = statusNew;
 	private String name = "(unnamed thread)";
 	private Runnable target;
 	private TCB tcb;
 	
-	private ThreadQueue joinQueue = ThreadedKernel.scheduler
+	public ThreadQueue joinQueue = ThreadedKernel.scheduler
 			.newThreadQueue(true);
 	/**
 	 * Unique identifer for this thread. Used to deterministically compare
@@ -473,7 +473,7 @@ public class KThread {
 	/** Number of times the KThread constructor was called. */
 	private static int numCreated = 0;
 
-	private static ThreadQueue readyQueue = null;
+	public static ThreadQueue readyQueue = null;
 	private static KThread currentThread = null;
 	private static KThread toBeDestroyed = null;
 	public static KThread idleThread = null;

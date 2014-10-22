@@ -48,6 +48,7 @@ public class AutoGrader {
 		run();
 	}
 
+
 	private void extractArguments(String[] args) {
 		String testArgsString = Config.getString("AutoGrader.testArgs");
 		if (testArgsString == null) {

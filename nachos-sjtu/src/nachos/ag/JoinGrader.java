@@ -1,5 +1,6 @@
 package nachos.ag;
 
+import nachos.threads.KThread;
 import nachos.threads.ThreadedKernel;
 
 /**
@@ -24,10 +25,12 @@ public class JoinGrader extends BasicTestGrader {
 
 			ThreadHandler handler = forkNewThread(new Runnable() {
 				public void run() {
+					//KThread.currentThread().joinQueue.print();
 					ThreadedKernel.alarm.waitUntil(waitTicks);
 				}
 			});
-
+			//KThread.readyQueue.print();
+			//KThread.readyQueue.print();
 			handler.thread.join();
 
 			assertTrue(handler.finished,

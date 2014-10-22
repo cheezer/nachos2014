@@ -195,7 +195,7 @@ public class PriorityScheduler extends Scheduler {
 		}
 
 		public void print() {
-			Lib.assertTrue(Machine.interrupt().disabled());
+			//Lib.assertTrue(Machine.interrupt().disabled());
 			// implement me (if you want)
 			for (Iterator<ThreadState> it = queue.iterator(); it.hasNext();)
 			{

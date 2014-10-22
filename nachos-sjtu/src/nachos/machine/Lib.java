@@ -569,6 +569,7 @@ public final class Lib {
 			// kamil - workaround for Java 1.4
 			// Thanks to Ka-Hing Cheung for the suggestion.
 			// Fixed for Java 1.5 by geels
+			//System.out.println(className);
 			Class[] param_types = new Class[0];
 			Object[] params = new Object[0];
 			return loadClass(className).getConstructor(param_types)

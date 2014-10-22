@@ -120,11 +120,11 @@ public class LotteryScheduler extends PriorityScheduler {
 	 * @return the scheduling state of the specified thread.
 	 */
 	@Override
-	protected ThreadS getThreadState(KThread thread) {
+	protected ThreadState getThreadState(KThread thread) {
 		if (thread.schedulingState == null)
 			thread.schedulingState = new ThreadS(thread);
 
-		return (ThreadS) thread.schedulingState;
+		return (ThreadState) thread.schedulingState;
 	}
 
 	/**
@@ -145,6 +145,8 @@ public class LotteryScheduler extends PriorityScheduler {
 			if (holder != null)
 			{
 				holder.holdList.remove(this);
+				holder.reCalEffectivePriority();
+				Lib.debug('l', "New efc: " + holder.thread.getName() + ": " + holder.getEffectivePriority());
 			}
 			if ((ts = pickNextThread()) != null)
 			{
@@ -158,7 +160,7 @@ public class LotteryScheduler extends PriorityScheduler {
 				return null;
 			}
 		}
-			
+		
 		/**
 		 * Return the next thread that <tt>nextThread()</tt> would return,
 		 * without modifying the state of this queue.
@@ -171,7 +173,7 @@ public class LotteryScheduler extends PriorityScheduler {
 			for (Iterator<ThreadState> it = queue.iterator(); it.hasNext();)
 			{
 				ThreadState ts = it.next();
-				priorityTot += ts.getEffectivePriority();
+				priorityTot += ts.efcPriority;
 				//Lib.debug('p', ts.thread.getName() + " priority " + ts.priority + "efcPriority" + ts.efcPriority);
 			}
 			if (priorityTot == 0) return null;
@@ -201,9 +203,50 @@ public class LotteryScheduler extends PriorityScheduler {
 		public ThreadS(KThread thread) {
 			super(thread);
 		}
+		private void update2(ThreadS last, int p)
+		{
+			
+			//System.out.println(this.thread.getName());
+			efcPriority += p;
+			if (belong != null && belong.holder != null && belong.transferPriority)
+				((ThreadS)belong.holder).update2(last, p);
+		}
+		@Override
+		public void updateEffectivePriority(int p)
+		{
+			Lib.debug('l', "updating the effective priority of " + this.thread.getName());
+			if (p == 0) return;
+			update2(this, p);
+			Lib.debug('l', "New effective priority: " + this.thread.getName() + ":" + efcPriority);
+		}
+		@Override
+		public int reCalEffectivePriority()
+		{
+			int oldefc = efcPriority;
+			efcPriority = priority;
+			for (PriorityQueue waitQueue: holdList)
+			if (waitQueue.transferPriority)
+				for (Iterator<ThreadState> it = waitQueue.queue.iterator(); it.hasNext();)
+					efcPriority += it.next().getEffectivePriority();
+			if (oldefc != efcPriority && belong != null && belong.holder != null && belong.transferPriority)
+				((ThreadS)belong.holder).updateEffectivePriority(efcPriority - oldefc);
+			return efcPriority;
+		}
+
+		/**
+		 * Set the priority of the associated thread to the specified value.
+		 * 
+		 * @param priority
+		 *            the new priority.
+		 */
 		@Override
 		public void setPriority(int priority) {
+			if (this.priority == priority)
+				return;
+			int oldPriority = this.priority;
 			this.priority = priority;
+			this.updateEffectivePriority(priority - oldPriority);
+			// implement me
 		}
 
 		@Override
@@ -212,28 +255,19 @@ public class LotteryScheduler extends PriorityScheduler {
 			boolean intStatus = Machine.interrupt().disable();
 			waitQueue.queue.add(this);
 			belong = waitQueue;
+			if (belong.holder != null && belong.transferPriority)
+				((ThreadS)belong.holder).updateEffectivePriority(efcPriority);
 			Machine.interrupt().setStatus(intStatus);
 		}
-		@Override
+		
 		public void acquire(PriorityQueue waitQueue) {
 			// implement me
 			boolean intStatus = Machine.interrupt().disable();
 			waitQueue.holder = this;
 			holdList.add(waitQueue);
 			belong = null;
+			this.reCalEffectivePriority();
 			Machine.interrupt().setStatus(intStatus);
-		}
-		@Override
-		public int getEffectivePriority()
-		{
-			int ans = priority;
-			//if (this.thread.status == KThread.statusRunning)
-				//return ans;
-			for (PriorityQueue pq : holdList)
-				if (pq.transferPriority)
-				for (ThreadState s: pq.queue)
-					ans += ((ThreadS)s).getEffectivePriority();
-			return ans;
 		}
 
 	}
