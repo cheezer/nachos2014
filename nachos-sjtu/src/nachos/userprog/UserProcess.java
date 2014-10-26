@@ -425,7 +425,7 @@ public class UserProcess {
 		String name = readVirtualMemoryString(namePos, maxLength);
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
 		if (toBeRemoved.contains(name))
-			return -1;//!
+			return -1;
 		OpenFile file = UserKernel.fileSystem.open(name, true);
 		if (file == null) return -1;
 		fileOpenNum.put(name);
@@ -443,6 +443,8 @@ public class UserProcess {
 		Lib.debug(dbgProcess, "syscallOpen");
 		String name = readVirtualMemoryString(namePos, maxLength);
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
+		if (toBeRemoved.contains(name))
+			return -1;
 		OpenFile file = UserKernel.fileSystem.open(name, false);
 		if (file == null) return -1;
 		int des = descriptor.getFreeDescriptor();
