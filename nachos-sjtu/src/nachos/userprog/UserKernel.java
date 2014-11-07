@@ -132,7 +132,7 @@ public class UserKernel extends ThreadedKernel {
 		UserProcess process = UserProcess.newUserProcess();
 		rootProcess = process;
 		String shellProgram = Machine.getShellProgramName();
-		Lib.assertTrue(process.execute(shellProgram, new String[] {"sh", "sample.sh"}));
+		Lib.assertTrue(process.execute(shellProgram, new String[] {"echo", "testing", "nachos"}));
 		
 		KThread.finish();
 	}
@@ -146,8 +146,8 @@ public class UserKernel extends ThreadedKernel {
 
 	/** Globally accessible reference to the synchronized console. */
 	public static SynchConsole console;
-	public static Lock freePagesLock;// = new Lock();
-	public static LinkedList<Integer> freePages;// = new LinkedList<Integer>();
+	private static Lock freePagesLock;// = new Lock();
+	private static LinkedList<Integer> freePages;// = new LinkedList<Integer>();
 	static UserProcess rootProcess; 
 
 }

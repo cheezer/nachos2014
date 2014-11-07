@@ -61,9 +61,6 @@ public class UserProcess {
 	public boolean execute(String name, String[] args) {
 		if (!load(name, args))
 		{
-			/*aliveLock.acquire();
-			aliveTot--;
-			aliveLock.release();*/
 			return false;
 		}
 
@@ -154,7 +151,7 @@ public class UserProcess {
 		Lib.assertTrue(offset >= 0 && length >= 0
 				&& offset + length <= data.length);
 		byte[] memory = Machine.processor().getMemory();
-		if (vaddr < 0 || vaddr + length > memory.length)
+		if (vaddr < 0)
 			return 0;
 		int t = Processor.offsetFromAddress(vaddr);
 		int vpn = Processor.pageFromAddress(vaddr);
@@ -164,7 +161,7 @@ public class UserProcess {
 			int count = Math.min(length, pageSize - t);
 			if (vpn > numPages)
 				return tot;
-			TranslationEntry tranEntry = pageTable[vpn];
+			TranslationEntry tranEntry = getPageEntry(vpn);
 			if (!tranEntry.valid) continue;
 			tranEntry.used = true;
 			int pAddr = Processor.makeAddress(tranEntry.ppn, t);
@@ -190,6 +187,11 @@ public class UserProcess {
 	public int writeVirtualMemory(int vaddr, byte[] data) {
 		return writeVirtualMemory(vaddr, data, 0, data.length);
 	}
+	
+	public TranslationEntry getPageEntry(int vpn)
+	{
+		return pageTable[vpn];
+	}
 
 	/**
 	 * Transfer data from the specified array to this process's virtual memory.
@@ -214,8 +216,11 @@ public class UserProcess {
 				&& offset + length <= data.length);
 
 		byte[] memory = Machine.processor().getMemory();
-		if (vaddr < 0 || vaddr + length > memory.length)
+		//if (vaddr < 0 || vaddr + length > memory.length)
+		if (vaddr < 0)
+		{
 			return 0;
+		}
 		int t = Processor.offsetFromAddress(vaddr);
 		int vpn = Processor.pageFromAddress(vaddr);
 		int amount = 0;
@@ -224,7 +229,7 @@ public class UserProcess {
 			int count = Math.min(length, pageSize - t);
 			if (vpn > numPages)
 				return amount;
-			TranslationEntry tranEntry = pageTable[vpn];
+			TranslationEntry tranEntry = getPageEntry(vpn);
 			if (!tranEntry.valid) continue;
 			tranEntry.used = true;
 			tranEntry.dirty = true;
@@ -302,7 +307,7 @@ public class UserProcess {
 
 		// and finally reserve 1 page for arguments
 		numPages++;
-
+		//System.out.println("!" + numPages);
 		if (!loadSections())
 			return false;
 
@@ -315,19 +320,14 @@ public class UserProcess {
 
 		for (int i = 0; i < argv.length; i++) {
 			byte[] stringOffsetBytes = Lib.bytesFromInt(stringOffset);
-			Lib
-					.assertTrue(writeVirtualMemory(entryOffset,
-							stringOffsetBytes) == 4);
+			Lib.assertTrue(writeVirtualMemory(entryOffset,stringOffsetBytes) == 4);
 			entryOffset += 4;
-			Lib
-					.assertTrue(writeVirtualMemory(stringOffset, argv[i]) == argv[i].length);
+			Lib.assertTrue(writeVirtualMemory(stringOffset, argv[i]) == argv[i].length);
 			stringOffset += argv[i].length;
-			Lib
-					.assertTrue(writeVirtualMemory(stringOffset,
-							new byte[] { 0 }) == 1);
+			Lib.assertTrue(writeVirtualMemory(stringOffset, new byte[] { 0 }) == 1);
 			stringOffset += 1;
 		}
-		executable.close();
+		//executable.close();
 		Lib.debug(dbgProcess, "UserProcess.load(\"" + name + "\") complete");
 		return true;
 	}
@@ -529,7 +529,6 @@ public class UserProcess {
 		for (int i = 2; i < maxDescriptor; ++i)
 			if (descriptor.get(i) != null)
 			{
-				//System.out.println(descriptor.get(i).getName());
 				handleClose(i);
 			}
 		aliveLock.acquire();
@@ -741,7 +740,7 @@ public class UserProcess {
 
 	private int initialPC, initialSP;
 	private int argc, argv;
-	private int processID;
+	protected int processID;
 	
 	protected static int maxDescriptor = 16;
 	protected Descriptor descriptor;
