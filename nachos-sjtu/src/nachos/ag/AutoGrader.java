@@ -133,8 +133,8 @@ public class AutoGrader {
 	private int level = 0, targetLevel = 0;
 
 	void done() {
-		//System.out.println("tlbMissCount: " + VMProcess.tlbMissCount);
-		//System.out.println("pageFaultCount: " + VMProcess.pageFaultCount);
+		System.out.println("tlbMissCount: " + VMProcess.tlbMissCount);
+		System.out.println("pageFaultCount: " + VMProcess.pageFaultCount);
 		System.out.print("\nsuccess\n");
 		privilege.exit(162);
 	}
