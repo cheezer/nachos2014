@@ -5,6 +5,7 @@ package nachos.ag;
 import nachos.machine.*;
 import nachos.security.*;
 import nachos.threads.*;
+import nachos.vm.VMProcess;
 
 import java.util.Hashtable;
 import java.util.StringTokenizer;
@@ -132,6 +133,8 @@ public class AutoGrader {
 	private int level = 0, targetLevel = 0;
 
 	void done() {
+		/*System.out.println("tlbMissCount: " + VMProcess.tlbMissCount);
+		System.out.println("pageFaultCount: " + VMProcess.pageFaultCount);*/
 		System.out.print("\nsuccess\n");
 		privilege.exit(162);
 	}
