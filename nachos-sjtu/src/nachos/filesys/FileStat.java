@@ -13,4 +13,18 @@ public class FileStat
   public int type;
   public int inode;
   public int links;
+
+  public FileStat(String name, File file)
+  {
+	  this.name = name;
+	  size = file.inode.file_size;
+	  sectors = file.inode.getNumSec();
+	  type = file.inode.file_type;
+	  inode = file.inode.addr;
+	  links = file.inode.link_count;
+  }
+  public String toString()
+  {
+	  return name + "\t" + size + "\t" + sectors + "\t" + type + "\t" + inode + "\t" + links; 
+  }
 }

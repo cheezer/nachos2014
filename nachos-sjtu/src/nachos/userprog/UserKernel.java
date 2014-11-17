@@ -2,6 +2,7 @@ package nachos.userprog;
 
 import java.util.LinkedList;
 
+import nachos.filesys.FilesysKernel;
 import nachos.machine.*;
 import nachos.threads.*;
 
@@ -128,22 +129,14 @@ public class UserKernel extends ThreadedKernel {
 	 */
 	public void run() {
 		super.run();
-
+		
+		/*String[] a = FilesysKernel.realFileSystem.readDir("/");
+		for (String i : a)
+			System.out.println(i);*/
 		UserProcess process = UserProcess.newUserProcess();
 		rootProcess = process;
 		String shellProgram = Machine.getShellProgramName();
-		Lib.assertTrue(process.execute(shellProgram, new String[] {}));
-		/*String shellProgram = Machine.getShellProgramName();
-		UserProcess process1 = UserProcess.newUserProcess();
-		Lib.assertTrue(process1.execute(shellProgram, new String[] {}));
-		UserProcess process2 = UserProcess.newUserProcess();
-		Lib.assertTrue(process2.execute(shellProgram, new String[] {}));
-		UserProcess process3 = UserProcess.newUserProcess();
-		Lib.assertTrue(process3.execute(shellProgram, new String[] {}));
-		UserProcess process4 = UserProcess.newUserProcess();
-		Lib.assertTrue(process4.execute(shellProgram, new String[] {}));
-		UserProcess process5 = UserProcess.newUserProcess();
-		Lib.assertTrue(process5.execute(shellProgram, new String[] {}));*/
+		Lib.assertTrue(process.execute(shellProgram, new String[] {"", "sample.sh"}));
 		
 		KThread.finish();
 	}

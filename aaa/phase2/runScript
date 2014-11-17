@@ -1,0 +1,81 @@
+#!/bin/bash
+#
+# 该脚本用于测试学生程序，请勿直接调用
+#
+if [[ $# != 1 ]]; then
+  echo "Usage: $0 <temp_dir>"
+  exit
+fi
+
+test_framework="test_framework"
+if [ ! -d $test_framework ]; then
+  echo "Error: $test_framework does not exist."
+  exit
+fi
+
+run_dir=$1
+echo "Temporary directory: $run_dir"
+
+if [ ! -d $test_framework/conf ]; then
+  echo "Error: $test_framework/conf does not exist.  Test framework is incomplete."
+  exit
+fi
+rm -rf $run_dir/conf && cp -r $test_framework/conf $run_dir/conf
+
+
+back=`pwd`
+file=$back/"tempFile"
+cd $run_dir
+
+
+nachos="java -cp bin nachos.machine.Machine -s 703243 "
+
+echo "*** TEST shCXR"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.AutoGrader -x shCXR.coff
+echo " " 
+
+echo "*** TEST test_files:" 
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_files.coff
+echo " " 
+
+echo "*** TEST test_files2"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_files2.coff -# output=test_files2.out
+echo " "
+
+echo "*** TEST test_matmult"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_matmult.coff -# output=test_matmult.out
+echo " "
+
+echo "*** TEST test_proc"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_proc.coff -# output=test_proc.out 
+echo " "
+
+echo "*** TEST grader_user1"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.UserGrader1 -x grader_user1.coff
+echo " "
+
+echo "*** TEST test_files3"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_files3.coff -# output=test_files3.out
+echo " "
+
+echo "*** TEST test_files4"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_files4.coff
+echo " "
+
+echo "*** TEST test_illegal"
+timeout 3s time $nachos-[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_illegal.coff -# output=test_illegal.out
+echo " "
+
+echo "*** TEST test_memalloc"
+timeout 3s time $nachos-[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_memalloc.coff -# output=test_memalloc.out
+echo " "
+
+echo "*** TEST test_memalloc2"
+timeout 3s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_memalloc2.coff
+echo " "
+
+echo "*** TEST test_memalloc3"
+timeout 60s time $nachos -[] conf/proj2.conf -- nachos.ag.CoffGrader -x test_memalloc3.coff -# output=test_memalloc3.out
+echo " "
+
+cd $back

@@ -432,6 +432,8 @@ public class UserProcess {
 		int des = descriptor.getFreeDescriptor();
 		descriptor.put(file, des);
 
+		System.out.println(des);
+
 /*		for (int i = 2; i < maxDescriptor; ++i)
 			if (descriptor.get(i) != null)
 				Lib.debug(dbgProcess, i + ":" + descriptor.get(i).getName());*/
@@ -454,6 +456,7 @@ public class UserProcess {
 		for (int i = 2; i < maxDescriptor; ++i)
 			if (descriptor.get(i) != null)
 				Lib.debug(dbgProcess, i + ":" + descriptor.get(i).getName());
+		System.out.println(des);
 		return des;
 	}
 	
@@ -810,6 +813,7 @@ public class UserProcess {
 		}
 		void remove(String name)
 		{
+			//System.out.println(name);
 			Lib.assertTrue(table.get(name) != null);
 			int ci = table.get(name);
 			table.put(name, new Integer(ci - 1));
