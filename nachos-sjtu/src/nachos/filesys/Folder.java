@@ -29,6 +29,8 @@ public class Folder extends File
     inode.file_type = INode.TYPE_FOLDER;
     size = 4;
     entry = new Hashtable<String, FolderEntry>();
+    //save();
+    //inode.save();
   }
   
   /** open a file in the folder and return its address */
@@ -53,7 +55,18 @@ public class Folder extends File
   /** create a new file in the folder and return its address */
 	public int createFile (String filename)
 	{
-		File file = new File(filename);
+		File file = new File(this.getName() + "/" + filename);
+		file.inode.link_count++;
+		entry.put(filename, new FolderEntry(filename, file.inode.addr));
+		file.inode.save();
+		return file.inode.addr;
+	}
+	
+	public int createSymFile (String filename)
+	{
+		File file = new File(this.getName() + "/" + filename);
+		file.inode.link_count++;
+		file.inode.file_type = INode.TYPE_SYMLINK;
 		entry.put(filename, new FolderEntry(filename, file.inode.addr));
 		file.inode.save();
 		return file.inode.addr;
@@ -61,10 +74,12 @@ public class Folder extends File
 	
 	public int createFolder (String folderName)
 	{
-		Folder folder = new Folder(new INode(FilesysKernel.realFileSystem.getFreeList().allocate()), folderName);
-		folder.inode.file_type = INode.TYPE_FOLDER;
+		Folder folder = new Folder(new INode(FilesysKernel.realFileSystem.getFreeList().allocate()), this.getName() + "/" + folderName);
 		folder.fatherAddr = inode.addr;
-		inode.save();
+		folder.save();
+		folder.inode.file_type = INode.TYPE_FOLDER;
+		folder.inode.link_count++;
+		folder.inode.save();
 		entry.put(folderName, new FolderEntry(folderName, folder.inode.addr));
 		return folder.inode.addr;
 	}

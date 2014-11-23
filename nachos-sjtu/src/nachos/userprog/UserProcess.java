@@ -1,5 +1,6 @@
 package nachos.userprog;
 
+import nachos.filesys.RealFileSystem;
 import nachos.machine.*;
 import nachos.threads.*;
 
@@ -34,6 +35,7 @@ public class UserProcess {
 		
 		descriptor.put(UserKernel.console.openForReading(), 0);
         descriptor.put(UserKernel.console.openForWriting(), 1);
+        fileSystem = ThreadedKernel.fileSystem;
 		
 	}
 
@@ -424,6 +426,8 @@ public class UserProcess {
 		Lib.debug(dbgProcess, "syscallCreate");
 		String name = readVirtualMemoryString(namePos, maxLength);
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
+		if (fileSystem instanceof RealFileSystem)
+			name = ((RealFileSystem)fileSystem).getAbsolutePath(name);
 		if (toBeRemoved.contains(name))
 			return -1;
 		OpenFile file = UserKernel.fileSystem.open(name, true);
@@ -431,8 +435,6 @@ public class UserProcess {
 		fileOpenNum.put(name);
 		int des = descriptor.getFreeDescriptor();
 		descriptor.put(file, des);
-
-		System.out.println(des);
 
 /*		for (int i = 2; i < maxDescriptor; ++i)
 			if (descriptor.get(i) != null)
@@ -445,6 +447,8 @@ public class UserProcess {
 		Lib.debug(dbgProcess, "syscallOpen");
 		String name = readVirtualMemoryString(namePos, maxLength);
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
+		if (fileSystem instanceof RealFileSystem)
+			name = ((RealFileSystem)fileSystem).getAbsolutePath(name);
 		if (toBeRemoved.contains(name))
 			return -1;
 		OpenFile file = UserKernel.fileSystem.open(name, false);
@@ -456,7 +460,7 @@ public class UserProcess {
 		for (int i = 2; i < maxDescriptor; ++i)
 			if (descriptor.get(i) != null)
 				Lib.debug(dbgProcess, i + ":" + descriptor.get(i).getName());
-		System.out.println(des);
+		//System.out.println(des);
 		return des;
 	}
 	
@@ -498,6 +502,7 @@ public class UserProcess {
 			if (descriptor.get(i) != null)
 				Lib.debug(dbgProcess, i + ":" + descriptor.get(i).getName());*/
 		descriptor.remove(fd);
+		//System.out.println(file.getName());
 		fileOpenNum.remove(file.getName());
 		file.close();
 		//System.out.println(file.getName() + " " + descriptor.get(fd));
@@ -520,7 +525,10 @@ public class UserProcess {
 			if (!UserKernel.fileSystem.remove(name))
 				return -1;
 		}
-		else toBeRemoved.add(name);
+		else if (!(fileSystem instanceof RealFileSystem && ((RealFileSystem)fileSystem).removeSymLink(name)))
+		{
+			toBeRemoved.add(name);	
+		}
 		return 0;
 	}
 	
@@ -685,7 +693,7 @@ public class UserProcess {
 		default:
 			//Lib.debug(dbgProcess, "Unknown syscall " + syscall);
 			//Lib.assertNotReached("Unknown system call!");
-			System.out.println(syscall);
+			//System.out.println(syscall);
 			this.handleExit(-1);
 		}
 		return 0;
@@ -779,6 +787,7 @@ public class UserProcess {
 		
 		void put(OpenFile file, int descriptor)
 		{
+			//System.out.println("putting " + file.getName());
 			//System.out.println("hey!");
 			Lib.assertTrue(free.contains(descriptor));
 			descrTable.put(file, new Integer(descriptor));
@@ -805,7 +814,11 @@ public class UserProcess {
 		}
 		void put(String name)
 		{
-			if (table.get(name) == null) table.put(name, new Integer(1));
+			if (table.get(name) == null) 
+			{
+				//System.out.println(name);
+				table.put(name, new Integer(1));
+			}
 			else {
 				int ci = table.get(name);
 				table.put(name, new Integer(ci + 1));
@@ -834,4 +847,5 @@ public class UserProcess {
 	private KThread thread;
 	private int status;
 	private HashMap<Integer, UserProcess> childs = new HashMap();
+	private FileSystem fileSystem;
 }

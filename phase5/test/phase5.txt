@@ -1,0 +1,9 @@
+"filesys_link", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x filesys_link.coff", 20
+"filesys_dir", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x filesys_dir.coff -# output=filesys_dir.out", 20
+"fs_num", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x fs_num.coff -# output=fs_num.out", 20
+"filesys_file", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x filesys_file.coff -# output=filesys_file.out,coffPar0=10240,coffPar1=100", 100
+"filesys_symlink", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x filesys_symlink.coff", 20
+"filesys_open_unlink", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x filesys_open_unlink.coff", 20
+"fs_dir_file", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x fs_dir_file.coff", 20
+"fs_linuxstyle_dir_op", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x fs_linuxstyle_dir_op.coff", 20
+"fs_size", "-[] conf/proj5.conf -- nachos.ag.FilesysGrader -x fs_size.coff -# output=fs_size.out", 200

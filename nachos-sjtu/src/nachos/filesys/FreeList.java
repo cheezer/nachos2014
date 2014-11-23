@@ -47,7 +47,11 @@ public class FreeList extends File
   public int allocate ()
   {
 	  if (freeList.isEmpty()) return -1;
-	  else return freeList.removeFirst();
+	  else 
+		  {
+		  	int p = freeList.removeFirst();
+		  	return p;
+		  }
   }
   
   /** deallocate a sector to be reused */
@@ -82,6 +86,19 @@ public class FreeList extends File
 		  else addr = addr + 1;
 	  }  
   }
+  
+  public void printUsed()
+  {
+	  int m = Disk.NumSectors;
+	  int free[] = new int[m];
+	  for (Iterator<Integer> it = freeList.iterator(); it.hasNext();)
+		  free[it.next()] = 1;
+	  for (int i = 0; i < m; ++i)
+		  if (free[i]  == 0)
+			  System.out.print(i + " ");
+	  System.out.println();
+  }
+  
   /** load the content of freelist from the disk */
   public void load ()
   {

@@ -25,9 +25,11 @@ public class FilesysProcess extends VMProcess
 
 	byte[] getByteArrayFromString(String st)
 	{
-		char[] data = st.toCharArray();
-		byte[] data2 = new byte[data.length];
-		System.arraycopy(data, 0, data2, 0, data.length);
+		//char[] data = st.toCharArray();
+		byte[] data2 = new byte[st.length()];
+		//System.out.println(st.length() + " " + data.length);
+		for (int i = 0; i < st.length(); ++i)
+			data2[i] = (byte) st.charAt(i);
 		return data2;
 	}
   
@@ -75,6 +77,8 @@ public class FilesysProcess extends VMProcess
     	  if (st == null) return -1;
     	  int size = a2, nameSize = a3;
     	  byte[] ans = new byte[size * nameSize];
+    	  for (int i = 0; i < size * nameSize; ++i)
+    		  ans[i] = 0;
     	  if (st.length > size) return -1;
     	  for (int i = 0; i < st.length; ++i)
     	  {
@@ -91,6 +95,8 @@ public class FilesysProcess extends VMProcess
     	  String name = readVirtualMemoryString(a0, 1 << 30);
     	  FileStat stat = realFileSystem.getStat(name);
     	  byte[] data = new byte[FileStat.FILE_NAME_MAX_LEN + 5 * 4];
+    	  for (int i = 0; i < FileStat.FILE_NAME_MAX_LEN; ++i)
+    		  data[i] = 0;
     	  byte[] data2 = getByteArrayFromString(stat.name);
     	  System.arraycopy(data2, 0, data, 0, data2.length);
     	  Lib.bytesFromInt(data, FileStat.FILE_NAME_MAX_LEN, stat.size);
@@ -98,7 +104,8 @@ public class FilesysProcess extends VMProcess
     	  Lib.bytesFromInt(data, FileStat.FILE_NAME_MAX_LEN + 8, stat.type);
     	  Lib.bytesFromInt(data, FileStat.FILE_NAME_MAX_LEN + 12, stat.inode);
     	  Lib.bytesFromInt(data, FileStat.FILE_NAME_MAX_LEN + 16, stat.links);
-    	  writeVirtualMemory(a2, data, 0, data.length);
+    	  writeVirtualMemory(a1, data, 0, data.length);
+    	  return data.length;
       }
        
       case SYSCALL_LINK:

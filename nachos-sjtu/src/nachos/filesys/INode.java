@@ -91,6 +91,7 @@ public class INode
 	
 	public int newSector()
 	{
+		//Lib.debug('f', "allocating");
 		int i = freeList.allocate();
 		Lib.assertTrue(i != -1);
 		sec_addr.add(i);
@@ -111,7 +112,10 @@ public class INode
 	public void free ()
 	{
 		while (!sec_addr.isEmpty())
+		{
+			//Lib.debug('f', "deallocating");
 			freeList.deallocate(sec_addr.removeFirst());
+		}
 		while (!addr_ext.isEmpty())
 			freeList.deallocate(addr_ext.removeFirst());
 		freeList.deallocate(addr);
