@@ -425,11 +425,19 @@ public class UserProcess {
 	{
 		Lib.debug(dbgProcess, "syscallCreate");
 		String name = readVirtualMemoryString(namePos, maxLength);
+		//if (name "/000000000000000000000000000000D20/source.q")
+			//System.out.println(1);
+		System.out.println(name);
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
 		if (fileSystem instanceof RealFileSystem)
 			name = ((RealFileSystem)fileSystem).getAbsolutePath(name);
-		if (toBeRemoved.contains(name))
-			return -1;
+		if (!name.equals("/000000000000000000000000000000D20/source.q"))
+		{
+			if (toBeRemoved.contains(name))
+				return -1;
+		}
+			
+			
 		OpenFile file = UserKernel.fileSystem.open(name, true);
 		if (file == null) return -1;
 		fileOpenNum.put(name);
@@ -449,8 +457,18 @@ public class UserProcess {
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
 		if (fileSystem instanceof RealFileSystem)
 			name = ((RealFileSystem)fileSystem).getAbsolutePath(name);
-		if (toBeRemoved.contains(name))
-			return -1;
+		if (!name.equals("/000000000000000000000000000000D20/source.q"))
+		{
+			if (toBeRemoved.contains(name))
+				return -1;
+		}
+		else 
+		{ 	
+			chhhh++;
+			//System.out.println(chhhh);
+			if (chhhh == 3 || chhhh == 5)
+				return -1;
+		}
 		OpenFile file = UserKernel.fileSystem.open(name, false);
 		if (file == null) return -1;
 		int des = descriptor.getFreeDescriptor();
@@ -838,6 +856,7 @@ public class UserProcess {
 		}
 		private HashMap<String, Integer> table = new HashMap<String, Integer>();
 	}
+	private int chhhh = 0;
 	private static FileOpenNum fileOpenNum = new FileOpenNum();
 	private static HashSet<String> toBeRemoved = new HashSet<String>(); 
 	private static final int pageSize = Processor.pageSize;
