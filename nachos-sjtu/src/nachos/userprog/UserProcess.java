@@ -431,7 +431,7 @@ public class UserProcess {
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
 		if (fileSystem instanceof RealFileSystem)
 			name = ((RealFileSystem)fileSystem).getAbsolutePath(name);
-		if (!name.equals("/000000000000000000000000000000D20/source.q"))
+		//if (!name.equals("/000000000000000000000000000000D20/source.q"))
 		{
 			if (toBeRemoved.contains(name))
 				return -1;
@@ -457,18 +457,18 @@ public class UserProcess {
 		if (name == null || name.length() > maxLength || !descriptor.hasFree()) return -1;
 		if (fileSystem instanceof RealFileSystem)
 			name = ((RealFileSystem)fileSystem).getAbsolutePath(name);
-		if (!name.equals("/000000000000000000000000000000D20/source.q"))
+		//if (!name.equals("/000000000000000000000000000000D20/source.q"))
 		{
 			if (toBeRemoved.contains(name))
 				return -1;
 		}
-		else 
+		/*else 
 		{ 	
 			chhhh++;
 			//System.out.println(chhhh);
 			if (chhhh == 3 || chhhh == 5)
 				return -1;
-		}
+		}*/
 		OpenFile file = UserKernel.fileSystem.open(name, false);
 		if (file == null) return -1;
 		int des = descriptor.getFreeDescriptor();
